@@ -1,0 +1,172 @@
+<!--
+    软工(开发)21-1班数据库原理课程作业提交系统网站 - 系统登录页面。v1.0.0
+    Copyright (c) 2022~2023 DuYu (No.202103180009), Faculty of Computer Science & Technology, Qilu University of Technology.
+-->
+<!doctype html>
+<html lang="zh">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>登录系统</title>
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.3/examples/sign-in/">
+    <link href="./assets/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="./jquery-3.6.3.js"></script>
+    <script src="./jquery.base64.js"></script>
+    <script src="./jquery.cookie.js"></script>
+    <script src="./vue.js"></script>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="./elementUI/index.css">
+    <!-- 引入组件库 -->
+    <script src="./elementUI/index.js"></script>
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+
+      .b-example-divider {
+        height: 3rem;
+        background-color: rgba(0, 0, 0, .1);
+        border: solid rgba(0, 0, 0, .15);
+        border-width: 1px 0;
+        box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
+      }
+
+      .b-example-vr {
+        flex-shrink: 0;
+        width: 1.5rem;
+        height: 100vh;
+      }
+
+      .bi {
+        vertical-align: -.125em;
+        fill: currentColor;
+      }
+
+      .nav-scroller {
+        position: relative;
+        z-index: 2;
+        height: 2.75rem;
+        overflow-y: hidden;
+      }
+
+      .nav-scroller .nav {
+        display: flex;
+        flex-wrap: nowrap;
+        padding-bottom: 1rem;
+        margin-top: -1px;
+        overflow-x: auto;
+        text-align: center;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+      }
+    </style>
+
+    
+    <!-- Custom styles for this template -->
+    <link href="sign-in.css" rel="stylesheet">
+</head>
+<body class="text-center">
+<script>
+    function warnings(str)
+    {
+        new Vue().$alert(str, '系统提示',
+            {
+                    confirmButtonText: '确定',
+                    callback: action => { return;}
+            });
+            return;
+    }
+    $(document).on('click','#submitSystem',function ()
+    {
+        const idnum=$("#idnum").val();
+        const password=$("#password_enc").val();
+        if(idnum==='')
+        {
+            warnings("请输入学号");
+            return;
+        }
+        if(password==='')
+        {
+            warnings("请输入密码");
+            return;
+        }
+        if(password.length>10)
+        {
+            warnings("您输入的密码过长");
+            return;
+        }
+        const password_enc=$.base64.encode(password);
+
+        $.ajax({
+        url:'/login',
+        type:'POST',
+        cache:false,
+        contentType:'application/json',
+        data: JSON.stringify({
+                'idnum':idnum,
+                'password_enc':password_enc,
+            }),
+        dataType: "json",
+        success:function (data)
+        {
+            if(data.code!==0)
+            {
+                warnings(data.describe);
+                return;
+            }
+            else
+            {
+                const pathofCookies='/';
+                $.cookie('idnum',data.idnum,{expires:1,path:pathofCookies});
+                $.cookie('name',data.name,{expires:1,path:pathofCookies});
+                $.cookie('password_enc',password_enc,{expires:1,path:pathofCookies});
+                window.location="/submit.html"
+                return;
+            }
+        },
+        error:function (data)
+        {
+            warnings('出现了异常，请检查网络连接。');
+            return;
+        }
+        });
+
+    })
+</script>
+
+<main class="form-signin w-100 m-auto">
+    <img class="mb-4" src="logo.jpg" alt="" width="80px" height="80px">
+    <h1 class="h3 mb-3 fw-normal">登录</h1>
+    <h5 class="h5 mb-3 fw-normal">开发1班 数据库作业提交系统</h5>
+
+    <div class="form-floating">
+      <input type="text" class="form-control" id="idnum" placeholder="">
+      <label for="idnum">您的学号</label>
+    </div>
+    <div class="form-floating" style="margin-top: 3px;">
+      <input type="password" class="form-control" id="password_enc" placeholder="">
+      <label for="password_enc">输入密码</label>
+    </div>
+
+    <div>
+      <h6 class="h6 mb-3 fw-normal"><a href="./register.html">注册账号</a></h6>
+    </div>
+    <button class="w-100 btn btn-lg btn-primary" id="submitSystem">登录系统</button>
+    <p class="mt-5 mb-3 text-muted" style="font-size: smaller;">
+        &copy; 2023 Duyu09, <br><nobr>Faculty of Computer Science & Technology,</nobr><br>
+        <nobr>Qilu University of Technology.</nobr>
+    </p>
+</main>
+
+</body>
+</html>

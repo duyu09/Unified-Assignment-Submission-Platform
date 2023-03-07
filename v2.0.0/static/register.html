@@ -1,0 +1,264 @@
+<!--
+    软工(开发)21-1班数据库原理课程作业提交系统网站 - 账号注册页面。v1.0.0
+    Copyright (c) 2022~2023 DuYu (No.202103180009), Faculty of Computer Science & Technology, Qilu University of Technology.
+-->
+<!doctype html>
+<html lang="zh">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>注册账号</title>
+    <link href="./assets/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="./jquery-3.6.3.js"></script>
+    <script src="./jquery.base64.js"></script>
+    <script src="./vue.js"></script>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="./elementUI/index.css">
+    <!-- 引入组件库 -->
+    <script src="./elementUI/index.js"></script>
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+
+      .b-example-divider {
+        height: 3rem;
+        background-color: rgba(0, 0, 0, .1);
+        border: solid rgba(0, 0, 0, .15);
+        border-width: 1px 0;
+        box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
+      }
+
+      .b-example-vr {
+        flex-shrink: 0;
+        width: 1.5rem;
+        height: 100vh;
+      }
+
+      .bi {
+        vertical-align: -.125em;
+        fill: currentColor;
+      }
+
+      .nav-scroller {
+        position: relative;
+        z-index: 2;
+        height: 2.75rem;
+        overflow-y: hidden;
+      }
+
+      .nav-scroller .nav {
+        display: flex;
+        flex-wrap: nowrap;
+        padding-bottom: 1rem;
+        margin-top: -1px;
+        overflow-x: auto;
+        text-align: center;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+      }
+    </style>
+
+    
+    <!-- Custom styles for this template -->
+    <link href="checkout.css" rel="stylesheet">
+  </head>
+<body class="bg-light">
+<script>
+    function warnings(str)
+    {
+        new Vue().$alert(str, '系统提示',
+            {
+                    confirmButtonText: '确定',
+                    callback: action => { return;}
+            });
+            return;
+    }
+    var problems=null;
+    $.ajax({
+        url:'/getProblems',
+        type:'POST',
+        cache:false,
+        dataType: "json",
+        success:function (data)
+        {
+            problems=data;
+            $('#problem01_face').html(problems.problem01.problem)
+            $('#problem02_face').html(problems.problem02.problem)
+            $('#problem03_face').html(problems.problem03.problem)
+        }
+    });
+    $(document).on('click','#registerButton',function()
+    {
+        const name=$('#Name').val();
+        const id=$('#Id').val();
+        const password01=$('#password').val();
+        const password02=$('#password02').val();
+        const problem_01=$('#Problem01').val();
+        const problem_02=$('#Problem02').val();
+        const problem_03=$('#Problem03').val();
+        const problem_01_id=problems.problem01.id;
+        const problem_02_id=problems.problem02.id;
+        const problem_03_id=problems.problem03.id;
+        const isChecked=$('#conf').prop("checked");
+        const password_enc=$.base64.encode(password01);
+        if(password01==='')
+        {
+            warnings('您必须设置密码');
+            return;
+        }
+        if(id==='')
+        {
+            warnings('您必须设置您的学号！');
+            return;
+        }
+        if(name==='')
+        {
+            warnings('您必须输入您的姓名');
+            return;
+        }
+        if(password01!==password02)
+        {
+            warnings('您两次输入的密码不一致，请检查。');
+            return;
+        }
+        if(password01.length<2 || password01.length>12)
+        {
+            warnings('密码的长度应为2~12位，请重新设置。');
+            return;
+        }
+        if(!isChecked)
+        {
+            warnings('您没有勾选保证认真完成作业的复选框，这可不行呀！');
+            return;
+        }
+
+        $.ajax({
+        url:'/submit',
+        type:'POST',
+        cache:false,
+        contentType:'application/json',
+        data: JSON.stringify({
+                'name':name,
+                'id':id,
+                'password_enc':password_enc,
+                'problem_01':problem_01,
+                'problem_01_id':problem_01_id,
+                'problem_02':problem_02,
+                'problem_02_id':problem_02_id,
+                'problem_03':problem_03,
+                'problem_03_id':problem_03_id
+            }),
+        dataType: "json",
+        success:function (data)
+        {
+            if(data.code!==0)
+            {
+                warnings(data.describe);
+                return;
+            }
+            else
+            {
+                new Vue().$alert('注册成功！', '系统提示',
+                {
+                    confirmButtonText: '前往登录',
+                    callback: action => { window.location='/';}
+                });
+            }
+        },
+        error:function (data)
+        {
+            warnings('出现了异常，请检查网络连接。');
+            return;
+        }
+        });
+
+    })
+</script>
+    
+<div class="container">
+  <main>
+    <div class="py-5 text-center">
+        <h2 style="font-weight:500"><nobr>注册 数据库原理作业提交系统账号</nobr></h2>
+        <hr class="my-4">
+      <p class="lead">
+        您现在正在注册：软件工程(开发)21-1班 数据库原理课程作业提交系统个人账号，该账号用于数据库原理课程平时作业和实验报告的提交。
+        注册时请务必将相关信息填写正确，谢谢大家。
+      </p>
+    </div>
+
+    <div class="row g-5">
+      <div class="col-md-7 col-lg-8">
+        <h4 class="mb-3">相关信息填写</h4>
+        <form class="needs-validation" novalidate>
+          <div class="row g-3">
+            <div class="col-sm-7">
+              <label for="Name" class="form-label">您的姓名</label>
+              <input type="text" class="form-control" id="Name" placeholder="" value="" required>
+            </div>
+
+            <div class="col-12">
+              <label for="Id" class="form-label">您的学号</label>
+              <div class="input-group has-validation">
+                <span class="input-group-text">No.</span>
+                <input type="text" class="form-control" id="Id" placeholder="" required>
+              </div>
+            </div>
+
+            <div class="col-12">
+              <label for="password" class="form-label">设定密码 (2~12位；不可修改，请牢记)</label>
+              <input type="password" class="form-control" id="password" placeholder="" required>
+              <label for="password02" class="form-label">确认密码</label>
+              <input type="password" class="form-control" id="password02" placeholder="" required>
+            </div>
+
+            <div class="col-sm-9">
+            <label for="Problems" class="form-label">问题验证 (防止他人恶意注册,不会可以刷新页面)</label>
+            <div id="Problems">
+              <label for="Problem01" class="form-label">问题1：<span id="problem01_face">null</span></label>
+              <input type="text" class="form-control" id="Problem01" placeholder="" required>
+
+              <label for="Problem02" class="form-label">问题2：<span id="problem02_face">null</span></label>
+              <input type="text" class="form-control" id="Problem02" placeholder="" required>
+              
+              <label for="Problem03" class="form-label">问题3：<span id="problem03_face">null</span></label>
+              <input type="text" class="form-control" id="Problem03" placeholder="" required>
+              
+            </div>
+            </div>
+          <hr class="my-4">
+          <label for="conf_check" class="form-label"><h5>请确认以下内容</h5></label>
+          <div class="form-check" id="conf_check">
+            <input type="checkbox" class="form-check-input" id="conf" checked required>
+            <label class="form-check-label" for="conf">认真学习这门课，独立完成作业和实验报告</label>
+          </div>
+          <hr class="my-4">
+          </div>
+        </form>
+        <button class="w-100 btn btn-primary btn-lg" id="registerButton">注册账号</button>
+      </div>
+    </div>
+  </main>
+
+  <footer class="my-5 pt-5 text-muted text-center text-small">
+    <p class="mb-1">&copy; 2023 Duyu09.</p>
+    <ul class="list-inline">
+      <li class="list-inline-item"><a href="https://github.com/duyu09">GitHub</a></li>
+      <li class="list-inline-item"><a href="https://author.baidu.com/home/1756639575860079">Baidu</a></li>
+      <li class="list-inline-item"><a href="https://blog.csdn.net/QLU_Duyu">CSDN</a></li>
+    </ul>
+  </footer>
+</div>
+<script src="checkout.js"></script>
+</body>
+</html>

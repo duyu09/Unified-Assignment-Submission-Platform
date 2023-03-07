@@ -1,0 +1,506 @@
+<!--
+    软工(开发)21-1班数据库原理课程作业提交系统网站 - 作业提交页面。v1.0.0
+    Copyright (c) 2022~2023 DuYu (No.202103180009), Faculty of Computer Science & Technology, Qilu University of Technology.
+-->
+<!doctype html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>提交作业</title>
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.3/examples/starter-template/">
+    <link href="./assets/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="./jquery-3.6.3.js"></script>
+    <script src="./jquery.base64.js"></script>
+    <script src="./jquery.cookie.js"></script>
+    <script src="./vue.js"></script>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="./elementUI/index.css">
+    <!-- 引入组件库 -->
+    <script src="./elementUI/index.js"></script>
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+
+      .b-example-divider {
+        height: 3rem;
+        background-color: rgba(0, 0, 0, .1);
+        border: solid rgba(0, 0, 0, .15);
+        border-width: 1px 0;
+        box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
+      }
+
+      .b-example-vr {
+        flex-shrink: 0;
+        width: 1.5rem;
+        height: 100vh;
+      }
+
+      .bi {
+        vertical-align: -.125em;
+        fill: currentColor;
+      }
+
+      .nav-scroller {
+        position: relative;
+        z-index: 2;
+        height: 2.75rem;
+        overflow-y: hidden;
+      }
+
+      .nav-scroller .nav {
+        display: flex;
+        flex-wrap: nowrap;
+        padding-bottom: 1rem;
+        margin-top: -1px;
+        overflow-x: auto;
+        text-align: center;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+      }
+    </style>
+    <!-- Custom styles for this template -->
+    <link href="starter-template.css" rel="stylesheet">
+</head>
+<body>
+    
+<div class="col-lg-8 mx-auto p-4 py-md-5">
+  <header class="d-flex align-items-center pb-3 mb-5 border-bottom">
+    <a href="#" class="d-flex align-items-center text-dark text-decoration-none">
+      <img src="logo.jpg" title="logo" style="width: 48px;height: 48px;">
+      <span class="fs-2">&nbsp;数据库原理&nbsp;作业提交</span>
+    </a>
+  </header>
+  <div style="font-weight: bolder;font-size: larger;">
+      <b style="font-size: larger;"><span id="stuName"></span><span>同学，<span id="timeAndGreet"></span>!&nbsp;&nbsp;</span></b>
+    <button type="button" class="btn btn-secondary" style="font-size: smaller;" id="exitBtn">退出登录</button>
+    <br><br>
+  </div>
+  <main>
+      <div class="mb-3">
+        <label for="SelectAssignment" class="form-label" style="font-size: larger;">
+            请选择作业 <nobr><span style="font-size: smaller;">剩余时间：<span id="leftTime">-请首先选择作业项以计时-</span></span></nobr>
+        </label>
+        <select class="form-select" id="SelectAssignment">
+          <option value="-1">-请首先选择作业项目-</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label class="form-label" for="assignmentFile" style="font-size: larger;">请选择文件</label>
+        <input type="file" class="form-control" id="assignmentFile">
+        <br>
+      </div>
+    
+    <div class="mb-5">
+      <button class="btn btn-primary btn-lg px-4" id="submitMainButton">提交</button>
+    </div>
+
+    <label class="form-label" style="font-size: larger;">
+      作业提交情况：
+      <span style="color: red;display: none;" id="not_submit_label">未提交</span>
+      <span id="submit_label" style="display: none;">
+        <span style="color: green;">已提交</span>&nbsp;<button type="button" class="btn btn-danger" id="deleteButton">删除</button>
+      </span>
+    </label>
+
+    <hr class="col-3 col-md-8 mb-5">
+
+    <div class="row g-5">
+      <div class="col-md-6">
+        <p style="font-size: larger;">友情链接</p>
+        <ul class="icon-list ps-0">
+          <li class="d-flex align-items-start mb-1">
+            <a href="/dapc/index.html" rel="noopener" target="_blank">
+              下载DAPC软件
+            </a>
+          </li>
+          <li class="d-flex align-items-start mb-1">
+            <a href="https://github.com/duyu09" rel="noopener" target="_blank">
+              Duyu09的GitHub主页
+            </a>
+          </li>
+          <li class="d-flex align-items-start mb-1">
+            <a href="https://www.qlu.edu.cn/" rel="noopener" target="_blank">
+              齐鲁工业大学
+            </a>
+          </li>
+          <li class="d-flex align-items-start mb-1">
+            <a href="https://jsxb.scsc.cn/" rel="noopener" target="_blank">
+              齐鲁工业大学 计算机科学与技术学部
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </main>
+  <footer class="pt-5 my-5 text-muted border-top">
+      &copy; 2023 &middot; Duyu09, <br><nobr>Faculty of Computer Science & Technology,</nobr><br>
+      <nobr>Qilu University of Technology.</nobr>
+  </footer>
+</div>
+
+<script src="./assets/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function warnings(str)
+    {
+        new Vue().$alert(str, '系统提示',
+            {
+                    confirmButtonText: '确定',
+                    callback: action => { return;}
+            });
+            return;
+    }
+    tempHour=new Date().getHours();
+    if(tempHour>=11 && tempHour<=13)
+    {
+        $('#timeAndGreet').html('中午好');
+    }
+    else if(tempHour>=5 && tempHour<11)
+    {
+        $('#timeAndGreet').html('上午好');
+    }
+    else if(tempHour>13 && tempHour<18)
+    {
+        $('#timeAndGreet').html('下午好');
+    }
+    else
+    {
+        $('#timeAndGreet').html('晚上好');
+    }
+
+    const name=$.cookie('name');
+    const idnum=$.cookie('idnum');
+    const password_enc=$.cookie('password_enc');
+    var assignData=null;
+    var currentDeadLine=null;
+    var currentDeadLine_num=0;
+    if(name===undefined||idnum===undefined||password_enc===undefined)
+    {
+        window.location='/';
+    }
+    $('#stuName').html(name);
+    $(document).on('click','#exitBtn',function ()
+    {
+        $.removeCookie('name');
+        $.removeCookie('idnum');
+        $.removeCookie('password_enc');
+        window.location="/";
+    })
+
+    $.ajax({
+        url:'/requireAssignment',
+        type:'POST',
+        cache:false,
+        contentType:'application/json',
+        dataType: "json",
+        success:function (data)
+        {
+            assignData=data;
+            const xlk=$("#SelectAssignment");
+            for(const i in data)
+            {
+                xlk.append($('<option></option>').val(data[i].assid).html(data[i].assignment));
+            }
+        },
+        error:function ()
+        {
+
+        }
+    })
+
+    $(document).on('change','#SelectAssignment',function ()
+    {
+        const xlk=$("#SelectAssignment");
+        const sl=$("#submit_label");
+        const nsl=$("#not_submit_label");
+        if(xlk.val()==='-1')
+        {
+            currentDeadLine = null;
+            currentDeadLine_num = 0;
+            sl.css('display','none');
+            nsl.css('display','none');
+            return;
+        }
+        if(assignData===null)
+        {
+            currentDeadLine = null;
+            currentDeadLine_num = 0;
+            sl.css('display','none');
+            nsl.css('display','none');
+            return;
+        }
+        for(const i in assignData)
+        {
+            if(assignData[i].assid===xlk.val())
+            {
+                currentDeadLine=assignData[i].deadline;
+                break;
+            }
+        }
+        if(currentDeadLine!==null)
+        {
+            currentDeadLine_num=parseInt(currentDeadLine.substr(0,13));
+        }
+
+
+
+        $.ajax({
+        url:'/requireIsSubmitted',
+        type:'POST',
+        cache:false,
+        contentType:'application/json',
+        data:JSON.stringify({
+                'idnum':idnum,
+                'assid':xlk.val(),
+            }),
+        dataType: "json",
+        success:function (data)
+        {
+            if(data.submitState===1)
+            {
+                nsl.css('display','none');
+                sl.css('display','inline');
+            }
+            else if(data.submitState===0)
+            {
+                sl.css('display','none');
+                nsl.css('display','inline');
+            }
+            else
+            {
+                sl.css('display','none');
+                nsl.css('display','none');
+            }
+        },
+        error:function ()
+        {
+            //alert("err")
+            sl.css('display','none');
+            nsl.css('display','none');
+        }
+        })
+
+    })
+    const vuecon02=new Vue();
+    $(document).on('click','#submitMainButton',function ()
+    {
+        const cf_option=confirm("您是否要提交所选文件？");
+        if(cf_option===false)
+        {
+            warnings('提交操作已取消。');
+            return;
+        }
+
+        const loading = vuecon02.$loading(
+            {
+                lock: true,
+                text: '请您稍候，正在提交您的作业...',
+                spinner: 'el-icon-loading',
+                background: 'rgba(0, 0, 0, 0.7)'
+            });
+
+        const xlk=$("#SelectAssignment");
+        const afs=$("#assignmentFile");
+        if(xlk.val()==='-1' || xlk.val()===-1)
+        {
+            loading.close()
+            warnings('请首先选择作业项');
+            return;
+        }
+        if(currentDeadLine_num-new Date().valueOf()<=0)
+        {
+            loading.close()
+            warnings('对不起，已超过截止时间，无法提交，请联系课代表。');
+            return;
+        }
+        if(afs[0].files.length<=0)
+        {
+            loading.close()
+            warnings('请选择文件');
+            return;
+        }
+
+        var dataF=new FormData();
+        dataF.append('idnum',idnum);
+        dataF.append('assid',xlk.val().toString());
+        dataF.append('name',name);
+        dataF.append('assignmentFile',afs[0].files[0]);
+        $.ajax({
+            url:'/submitFile',
+            type:'POST',
+            cache:false,
+            data:dataF,
+            contentType:false,
+            processData:false,
+            success:function (data)
+            {
+                if(data.submitState===0 || data.submitState==='0')
+                {
+                    const vueconst = new Vue();
+                    loading.close();
+                    vueconst.$alert('作业提交成功！', '系统提示',
+                    {
+                        confirmButtonText: '确定',
+                        callback: action => {
+                            const sl=$("#submit_label");
+                            const nsl=$("#not_submit_label");
+                            sl.css('display','inline');
+                            nsl.css('display','none');
+                        }
+                    });
+                    return;
+                }
+                else
+                {
+                    loading.close();
+                    warnings(data.describe);
+                    return;
+                }
+            },
+            error:function ()
+            {
+                loading.close();
+                warnings('出现了未知错误，请检查网络连接，或联系课代表。');
+                return;
+            }
+        })
+        //loading.close();
+    })
+
+    $(document).on('click','#deleteButton',function ()
+    {
+        const cf_option=confirm("您是否要删除文件，该操作不可恢复。");
+        if(cf_option===false)
+        {
+            warnings('删除操作已取消。');
+            return;
+        }
+        const xlk=$("#SelectAssignment");
+        $.ajax({
+            url:'/deleteFile',
+            type:'post',
+            cache:false,
+            contentType:'application/json',
+            data:JSON.stringify({
+                'idnum':idnum,
+                'assid':xlk.val(),
+            }),
+            dataType: "json",
+            success:function (data)
+            {
+                if(data.code===0 || data.code==='0')
+                {
+                    new Vue().$alert('成功执行删除操作！', '系统提示',
+                    {
+                        confirmButtonText: '确定',
+                        callback: action => { window.location=window.location;}
+                    });
+                    return;
+                }
+                else
+                {
+                    warnings(data.describe);
+                    return;
+                }
+            },
+            error:function ()
+            {
+                warnings('未能执行删除操作，请重试，或联系课代表。');
+                return;
+            }
+        })
+
+    })
+
+
+</script>
+
+<script>
+    function formatSeconds(value)
+        {
+            var flagF=true;
+            if(value<0)
+            {
+                value=-value;
+                flagF=false;
+            }
+            ms=parseInt(value)%1000
+            value=parseInt(value/1000)
+            var second = parseInt(value)
+            var minute = 0
+            var hour = 0
+            var day = 0
+            if (second > 60)
+            {
+                minute = parseInt(second / 60)
+                second = parseInt(second % 60)
+                if (minute > 60)
+                {
+                    hour = parseInt(minute / 60)
+                    minute = parseInt(minute % 60)
+                    if (hour > 23)
+                    {
+                        day = parseInt(hour / 24)
+                        hour = parseInt(hour % 24)
+                    }
+                }
+            }
+            let result = '' + second.toString().padStart(2,'0') + '秒' +''+ parseInt(ms).toString().padStart(3,'0') + '毫秒'
+            if (minute > 0)
+            {
+                result = '' + minute.toString().padStart(2,'0') + '分' + result
+            }
+            else
+            {
+                result = '' + "00".toString().padStart(2,'0') + '分' + result
+            }
+            if (hour > 0)
+            {
+                result = '' + hour.toString().padStart(2,'0') + '时' + result
+            }
+            else
+            {
+                result = '' + "00".toString().padStart(2,'0') + '时' + result
+            }
+            if (day > 0)
+            {
+                result = '' + day.toString().padStart(2,'0') + '天' + result
+            }
+            else
+            {
+                result = '' + "00".toString().padStart(2,'0') + '天' + result
+            }
+            if(!flagF)
+            {
+                result = '超时'+result;
+            }
+            return result
+        }
+        function showct()
+        {
+            if(currentDeadLine_num!==0&&currentDeadLine!==null)
+            {
+                $("#leftTime").html(formatSeconds(currentDeadLine_num-new Date().valueOf()));
+            }
+            else
+            {
+                $("#leftTime").html("-请首先选择作业项以计时-");
+            }
+
+        }
+        setInterval(showct,66);
+</script>
+      
+</body>
+</html>
